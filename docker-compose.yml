@@ -1,0 +1,79 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend   # Usa la carpeta backend como contexto
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    working_dir: /app
+    volumes:
+      - ./backend:/app          # 🪟 sincroniza tu código local
+      - /app/node_modules
+    depends_on:
+      - mariadb
+      - minio
+    environment:
+      - NODE_ENV=production
+      - DB_HOST=mariadb
+      - DB_PORT=3306
+      - DB_USER=musicuser
+      - DB_PASS=musicpass
+      - DB_NAME=musicdb
+      - S3_ENDPOINT=http://minio:9000 # ⬅ asegúrate que coincida con el puerto host
+      - S3_ACCESS_KEY=minioadmin
+      - S3_SECRET_KEY=minioadmin
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "5173:5173"
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - VITE_API_URL=http://localhost:3000
+    depends_on:
+      - backend
+
+  mariadb:
+    image: mariadb:10.11
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: musicpass
+      MYSQL_DATABASE: musicdb
+      MYSQL_USER: musicuser
+      MYSQL_PASSWORD: musicpass
+    ports:
+      - '3306:3306'
+    volumes:
+      - mariadbdata:/var/lib/mysql
+
+  minio:
+    image: minio/minio
+    command: server /data --console-address ":9001"
+    ports:
+      - "9002:9000"  # ⬅ this is for api
+      - "9001:9001"  # ⬅  this is for panel web
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    volumes:
+      - miniodata:/data
+  minio-init:
+    image: minio/mc
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      sleep 5;
+      mc alias set local http://minio:9000 minioadmin minioadmin &&
+      mc mb local/songs || true &&
+      mc anonymous set download local/songs
+      "
+volumes:
+  mariadbdata:
+  miniodata:

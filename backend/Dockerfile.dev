@@ -1,0 +1,16 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Instala dependencias
+COPY package*.json ./
+RUN npm install --legacy-peer-deps
+
+# Instala nodemon globalmente
+RUN npm install -g nodemon
+
+# Copia todo (aunque será sobrescrito por volumen)
+COPY . .
+
+# Usa nodemon con typescript
+CMD ["nodemon", "--watch", "src", "--ext", "ts,json", "--exec", "ts-node", "src/main.ts"]
