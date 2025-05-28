@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import {
+  play,
   togglePlay,
   setVolume,
   setCurrentTime,
@@ -34,8 +35,16 @@ export function usePlayer() {
 
   const setSongsHandler = (songsList: Song[]) => dispatch(setSongs(songsList as []));
 
-  const setCurrentSongHandler = (song: Song | null) => dispatch(setCurrentSong(song as Song | null));
+  const setCurrentSongHandler = (song: Song | null) => {
+    dispatch(setCurrentSong(song as Song | null));
+    console.log('🚀 ~ setCurrentSongHandler ~ song:', song)
+    if (song) {
+      dispatch(setCurrentTime(0));
+      dispatch(play());
+    }
+  }
 
+  const playHandler = () => dispatch(play());
   const playNextHandler = () => dispatch(nextSong());
   const playPreviousHandler = () => dispatch(previousSong());
 
@@ -53,6 +62,7 @@ export function usePlayer() {
     setSongsHandler,
     setCurrentSongHandler,
     playNextHandler,
-    playPreviousHandler
+    playPreviousHandler,
+    playHandler
   };
 }

@@ -64,9 +64,9 @@ export function usePlaylists() {
     playlistId: number,
     songId: number
   ): Promise<void> => {
-    await axios.delete(`${API}/playlists/${playlistId}/songs/${songId}`, {
-      headers: getAuthHeaders(),
-    });
+    await axios.delete(`${API}/playlists/${playlistId}/songs/${songId}`,
+      { headers: getAuthHeaders() }
+    );
     await fetchPlaylists();
   }, [getAuthHeaders, fetchPlaylists]);
 

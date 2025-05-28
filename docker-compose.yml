@@ -73,6 +73,8 @@ services:
       mc alias set local http://minio:9000 minioadmin minioadmin &&
       mc mb local/songs || true &&
       mc anonymous set download local/songs
+      mc mb local/playlists || true &&
+      mc anonymous set download local/playlists
       "
 volumes:
   mariadbdata:

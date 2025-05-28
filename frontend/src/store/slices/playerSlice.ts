@@ -7,7 +7,7 @@ interface PlayerState {
   volume: number;
   currentTime: number;
   duration: number;
-  songs: [],
+  songs: Song[];
   currentSong: Song | null;
 }
 
@@ -16,7 +16,7 @@ const initialState: PlayerState = {
   volume: 1.0, // Default volume level (1.0 = 100%)
   currentTime: 0,
   duration: 0,
-  songs: [],
+  songs: [] as Song[],
   currentSong: null,
 };
 
@@ -24,6 +24,9 @@ const playerSlice = createSlice({
   name: "player",
   initialState,
   reducers: {
+    play: (state) => {
+      state.isPlaying = true;
+    },
     togglePlay: (state) => {
       state.isPlaying = !state.isPlaying;
     },
@@ -43,19 +46,21 @@ const playerSlice = createSlice({
       state.currentSong = action.payload;
     },
     nextSong: (state) => {
-      const currentIndex = state.songs.findIndex(song => song === state.currentSong);
+      const currentIndex = state.songs.findIndex(song => song.id === state.currentSong?.id);
       if (currentIndex !== -1 && currentIndex < state.songs.length - 1) {
         state.currentSong = state.songs[currentIndex + 1];
+        state.isPlaying = true;
       }
     },
     previousSong: (state) => {
-      const currentIndex = state.songs.findIndex(song => song === state.currentSong);
+      const currentIndex = state.songs.findIndex(song => song.id === state.currentSong?.id);
       if (currentIndex > 0) {
         state.currentSong = state.songs[currentIndex - 1];
+        state.isPlaying = true;
       }
     },
   },
 });
 
-export const { togglePlay, setVolume, setCurrentTime, setDuration, setSongs, setCurrentSong, nextSong, previousSong } = playerSlice.actions;
+export const { play, togglePlay, setVolume, setCurrentTime, setDuration, setSongs, setCurrentSong, nextSong, previousSong } = playerSlice.actions;
 export default playerSlice.reducer;

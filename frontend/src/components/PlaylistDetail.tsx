@@ -8,18 +8,36 @@ import {
   Stack,
   Button,
 } from '@mantine/core';
-import { IconMusic, IconUser } from '@tabler/icons-react';
-import type { Playlist } from '../types';
+import { IconPlayerPlay, IconArrowsShuffle } from '@tabler/icons-react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import SongList from './SongList';
 import { usePlaylists } from '../hooks/usePlaylists';
 import { useSongs } from '../hooks/useSong';
 import { useEffect } from 'react';
+import { usePlayer } from '../hooks/usePlayer';
 
 export default function PlaylistDetail() {
   const navigate = useNavigate();
   const { selectedPlaylist } = usePlaylists();
+  const { setSongsHandler, setCurrentSongHandler, playHandler } = usePlayer();
+
+  const handlePlay = () => {
+    if (selectedPlaylist?.songs?.length) {
+      setSongsHandler(selectedPlaylist.songs);
+      setCurrentSongHandler(selectedPlaylist.songs[0]);
+      playHandler();
+    }
+  };
+
+  const handleShufflePlay = () => {
+    if (selectedPlaylist?.songs?.length) {
+      const shuffled = [...selectedPlaylist.songs].sort(() => 0.5 - Math.random());
+      setSongsHandler(shuffled);
+      setCurrentSongHandler(shuffled[0]);
+      playHandler();
+    }
+  };
 
   return (
     <motion.div
@@ -46,7 +64,29 @@ export default function PlaylistDetail() {
             </Text>
           </Stack>
         </Group>
-
+        <Group mb="md">
+          <Button
+            onClick={handlePlay}
+            color="grape"
+            size="lg"
+            w={48}
+            h={48}
+            p={0}
+          >
+            <IconPlayerPlay size={32} />
+          </Button>
+          <Button
+            onClick={handleShufflePlay}
+            variant="outline"
+            color="gray"
+            size="lg"
+            w={48}
+            h={48}
+            p={0}
+          >
+            <IconArrowsShuffle size={28} />
+          </Button>
+        </Group>
         <SongList
           songs={selectedPlaylist?.songs || []}
           onEdit={() => { }}
