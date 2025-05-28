@@ -61,7 +61,17 @@ export default function PlaylistList({ onChange, onSelect }: PlaylistListProps) 
             >
               <Group align="center" justify="space-between">
                 <Group>
-                  <Box w={48} h={48} style={{ backgroundColor: '#5b5be0', borderRadius: 12 }} />
+                  {playlist.image ? (
+                    <Box w={48} h={48} style={{ borderRadius: 12, overflow: 'hidden' }}>
+                      <img
+                        src={playlist.image}
+                        alt={playlist.title}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 12 }}
+                      />
+                    </Box>
+                  ) : (
+                    <Box w={48} h={48} style={{ backgroundColor: '#5b5be0', borderRadius: 12 }} />
+                  )}
                   <Box>
                     <Text fw={700} size="lg" c="white">{playlist.title}</Text>
                     <Text size="sm" c="gray">{playlist.songs?.length || 0} songs</Text>

@@ -37,7 +37,6 @@ export function usePlayer() {
 
   const setCurrentSongHandler = (song: Song | null) => {
     dispatch(setCurrentSong(song as Song | null));
-    console.log('🚀 ~ setCurrentSongHandler ~ song:', song)
     if (song) {
       dispatch(setCurrentTime(0));
       dispatch(play());

@@ -33,14 +33,14 @@ export default function SongList({ songs, onEdit }: Props) {
 
   const { setCurrentSongHandler } = usePlayer();
 
-  const { addSongToPlaylist, playlists } = usePlaylists();
+  const { addSongToPlaylist, removeSongFromPlaylist, playlists } = usePlaylists();
 
   const handleDelete = async (id: number) => {
     await deleteSong(id);
   };
 
   return (
-    <ScrollArea h={600} px="md">
+    <ScrollArea h="100vh" px="md">
       <Title order={4} mb="xs" c="white">
         Canciones
       </Title>
@@ -111,18 +111,29 @@ export default function SongList({ songs, onEdit }: Props) {
                       <Menu.Target>
                         <Group gap={8}>
                           <IconPlus size={16} />
-                          <span>Añadir a playlist</span>
+                          <span>Playlist</span>
                         </Group>
                       </Menu.Target>
                       <Menu.Dropdown>
-                        {playlists.map((pl) => (
-                          <Menu.Item
-                            key={pl.id}
-                            onClick={() => addSongToPlaylist(pl.id, song.id)}
-                          >
-                            {pl.title}
-                          </Menu.Item>
-                        ))}
+                        {playlists.map((pl) => {
+                          const isInPlaylist = pl.songs?.some((s) => s.id === song.id);
+
+                          return (
+                            <Menu.Item
+                              key={pl.id}
+                              onClick={() => {
+                                if (isInPlaylist) {
+                                  removeSongFromPlaylist(pl.id, song.id);
+                                } else {
+                                  addSongToPlaylist(pl.id, song.id);
+                                }
+                              }}
+                              rightSection={isInPlaylist ? <Text size="sm">✔</Text> : null}
+                            >
+                              {pl.title}
+                            </Menu.Item>
+                          );
+                        })}
                       </Menu.Dropdown>
                     </Menu>
                   </Menu.Item>
