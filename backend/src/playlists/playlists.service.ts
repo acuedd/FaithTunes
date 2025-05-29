@@ -6,7 +6,7 @@ import { Song } from '../songs/entities/song.entity';
 import { User } from '../users/entities/user.entity';
 import { CreatePlaylistDto } from './dto/create-playlist.dto';
 import { NotFoundException } from '@nestjs/common';
-
+import { minioClient } from '../shared/utils/minio.client';
 
 @Injectable()
 export class PlaylistsService {
@@ -44,7 +44,17 @@ export class PlaylistsService {
   }
 
   async delete(id: number): Promise<void> {
-    await this.playlistRepository.delete(id);
+    const playlist = await this.findById(id);
+
+    try {
+      const url = new URL(playlist.image);
+      const objectName = decodeURIComponent(url.pathname.replace(/^\//, '').replace(/^playlists\//, ''));
+      await minioClient.removeObject('playlists', objectName);
+      await this.playlistRepository.delete(id);
+    } catch (err) {
+      console.error('Error eliminando archivo en MinIO:', err);
+    }
+
   }
 
   async update(id: number, dto: Partial<CreatePlaylistDto>): Promise<Playlist> {

@@ -75,7 +75,7 @@ export class PlaylistsController {
         { 'Content-Type': image.mimetype }
       );
 
-      const imageUrl = `${process.env.MINIO_PUBLIC_URL}/${bucketName}/${fileName}`;
+      const imageUrl = `${process.env.PUBLIC_S3_URL}/${bucketName}/${fileName}`;
       await this.playlistsService.setPlaylistImage(playlist.id, imageUrl);
     }
 
