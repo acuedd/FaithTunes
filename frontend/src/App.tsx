@@ -7,8 +7,10 @@ import Dashboard from './pages/Dashboard';
 import UserAdminPage from './pages/UserAdminPage';
 import UserProfilePage from './pages/UserProfilePage';
 import { ProtectedRoute } from './components/ProtectedRoute';
+import { useAuth } from './hooks/useAuth';
 
 export default function App() {
+  const { isAuthenticated } = useAuth();
   return (
     <MantineProvider
       theme={{
@@ -38,10 +40,19 @@ export default function App() {
           <Route path="/register" element={<Register />} />
           <Route element={<ProtectedRoute />}>
             <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/dashboard/users" element={<UserAdminPage />} />
-            <Route path="/dashboard/profile" element={<UserProfilePage />} />
+            <Route path="/users" element={<UserAdminPage />} />
+            <Route path="/profile" element={<UserProfilePage />} />
           </Route>
-          <Route path="*" element={<Navigate to="/login" />} />
+          <Route
+            path="*"
+            element={
+              isAuthenticated ? (
+                <Navigate to="/dashboard" replace />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
         </Routes>
       </Router>
     </MantineProvider>
