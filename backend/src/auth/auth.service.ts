@@ -21,7 +21,9 @@ export class AuthService {
   }
 
   async login(user: any) {
-    const payload = { email: user.email, sub: user.id };
+    const payload = {
+      email: user.email, sub: user.id, role: user.role,
+    };
     const access_token = this.jwtService.sign(payload, {
       expiresIn: process.env.JWT_EXPIRATION || '900s',
     });
@@ -33,12 +35,18 @@ export class AuthService {
     return {
       access_token,
       refresh_token,
+      user: {
+        email: user.email,
+        role: user.role,
+        name: user.name,
+        id: user.id,
+      },
     };
   }
 
   async register(data: RegisterDto) {
     const hash = await bcrypt.hash(data.password, 10);
-    const newUser = await this.usersService.create({ ...data, password: hash });
+    const newUser = await this.usersService.create({ ...data, password: hash, role: 'user' });
     return this.login(newUser);
   }
 
