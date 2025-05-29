@@ -110,6 +110,8 @@ export default function Dashboard() {
           />
         </>
       }
+      setUploadOpen={setUploadOpen}
+      setCreateOpen={setCreateOpen}
     >
       <Group mb="md" gap="sm">
         <Button

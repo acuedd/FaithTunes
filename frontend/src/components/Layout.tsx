@@ -28,12 +28,6 @@ function NavLinks() {
             <span>Home</span>
           </Group>
         </Button>
-        <Button variant="subtle" onClick={() => navigate('/settings')}>
-          <Group>
-            <IconSettings size={20} />
-            <span>Settings</span>
-          </Group>
-        </Button>
       </Stack>
     </ScrollArea>
   );

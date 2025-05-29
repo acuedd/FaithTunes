@@ -30,7 +30,7 @@ export const Header: React.FC<HeaderProps> = ({ onToggleDrawer }) => {
       <Group justify="space-between" p="sm">
         <Group>
           <Burger onClick={onToggleDrawer} hiddenFrom="sm" size="sm" />
-          <Title order={3}>MusicApp 🎶</Title>
+          <Title order={3}>FaithTunes 🎶</Title>
         </Group>
         <Group>
           <ToggleThemeButton />
