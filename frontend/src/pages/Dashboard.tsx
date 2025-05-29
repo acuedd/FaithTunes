@@ -5,42 +5,37 @@ import {
   Group,
   Stack,
   Text,
-  Box,
-  Loader,
-  Modal,
-  ActionIcon,
-  Image,
-  ScrollArea,
+  ScrollArea
 } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useAuthStore } from '../store/auth';
 import SongList from '../components/SongList';
 import PlaylistList from '../components/PlaylistList';
 import CreatePlaylistModal from '../components/CreatePlaylistModal';
 import PlayerFooter from '../components/PlayerFooter';
-import { IconLogout, IconMusic, IconPlaylist, IconPlus, IconUser } from '@tabler/icons-react';
+import { IconPlus, } from '@tabler/icons-react';
 import { useSongs } from '../hooks/useSong';
 import { usePlaylists } from '../hooks/usePlaylists';
-import type { Playlist, Song } from '../types';
+import type { Song } from '../types';
 import UploadSongModal from '../components/UploadSongModal';
 import EditSongModal from '../components/EditSongModal';
 import PlaylistDetail from '../components/PlaylistDetail';
+import { useAuth } from '../hooks/useAuth';
+import { Header } from '../components/Header';
 
 export default function Dashboard() {
-  const { accessToken, logout } = useAuthStore();
+  const { logoutUser } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const initialTab = (queryParams.get('tab') as 'songs' | 'playlists') || 'songs';
-  const { fetchSongs, deleteSong, songs } = useSongs();
-  const { fetchPlaylists, addSongToPlaylist, clearSelectionPlaylist } = usePlaylists();
+  const { fetchSongs, songs } = useSongs();
+  const { fetchPlaylists, clearSelectionPlaylist } = usePlaylists();
   const { selectedPlaylist, pickPlaylist, playlists } = usePlaylists();
   const [uploadOpen, setUploadOpen] = useState(false);
   const [createOpen, setCreateOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [songToEdit, setSongToEdit] = useState<Song | null>(null);
-  const [playlistSelectOpen, setPlaylistSelectOpen] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState<'songs' | 'playlists'>(initialTab);
 
   useEffect(() => {
@@ -65,7 +60,7 @@ export default function Dashboard() {
       ]);
     } catch (err) {
       console.error(err);
-      logout();
+      logoutUser();
       navigate('/login');
     }
   };
@@ -73,15 +68,6 @@ export default function Dashboard() {
   useEffect(() => {
     fetchData();
   }, []);
-
-  const handleAddToPlaylist = async (songId: number, playlistId: number) => {
-    try {
-      await addSongToPlaylist(playlistId, songId);
-      setPlaylistSelectOpen(null);
-    } catch (err) {
-      console.error('Error al añadir canción a la playlist:', err);
-    }
-  };
 
   const handleEditClick = (song: Song) => {
     setSongToEdit(song);
@@ -94,28 +80,12 @@ export default function Dashboard() {
       header={{ height: 60 }}
       navbar={{ width: 250, breakpoint: 'sm' }}
       styles={{
-        main: {
-          backgroundColor: '#1e1e2f',
-          color: 'white',
-          paddingBottom: '80px',
-        },
+
       }}
     >
-      <AppShell.Header style={{ backgroundColor: '#12121c' }}>
-        <Group justify="space-between" p="sm">
-          <Title order={3} c="white">MusicApp 🎶</Title>
-          <Button
-            variant="outline"
-            color="red"
-            leftSection={<IconLogout size={16} />}
-            onClick={() => { logout(); navigate('/login'); }}
-          >
-            Salir
-          </Button>
-        </Group>
-      </AppShell.Header>
+      <Header />
 
-      <AppShell.Navbar style={{ backgroundColor: '#12121c', color: 'white' }} p="md">
+      <AppShell.Navbar style={{}} p="md">
         <Stack gap="sm">
           <Button fullWidth variant="light" onClick={() => setUploadOpen(true)} leftSection={<IconPlus size={14} />}>
             Subir canción

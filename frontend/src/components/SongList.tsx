@@ -41,7 +41,7 @@ export default function SongList({ songs, onEdit }: Props) {
 
   return (
     <ScrollArea h="100vh" px="md">
-      <Title order={4} mb="xs" c="white">
+      <Title order={4} mb="xs" >
         Canciones
       </Title>
       <Box>
@@ -51,7 +51,6 @@ export default function SongList({ songs, onEdit }: Props) {
             radius="md"
             p="md"
             withBorder
-            bg="dark.7"
             mb="sm"
           >
             <Group justify="space-between">
@@ -77,7 +76,7 @@ export default function SongList({ songs, onEdit }: Props) {
                   />
                 )}
                 <Box>
-                  <Text fw={500} c="white">
+                  <Text fw={500} >
                     {song.title}
                   </Text>
                   <Text size="sm" c="dimmed">

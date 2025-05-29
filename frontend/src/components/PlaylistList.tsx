@@ -46,8 +46,8 @@ export default function PlaylistList({ onChange, onSelect }: PlaylistListProps) 
               shadow="sm"
               p="md"
               radius="md"
+              withBorder
               style={{
-                backgroundColor: '#2a2a3c',
                 transition: 'transform 0.2s, box-shadow 0.2s',
               }}
               onMouseEnter={e => {
@@ -70,10 +70,10 @@ export default function PlaylistList({ onChange, onSelect }: PlaylistListProps) 
                       />
                     </Box>
                   ) : (
-                    <Box w={48} h={48} style={{ backgroundColor: '#5b5be0', borderRadius: 12 }} />
+                    <Box w={48} h={48} style={{ borderRadius: 12 }} />
                   )}
                   <Box>
-                    <Text fw={700} size="lg" c="white">{playlist.title}</Text>
+                    <Text fw={700} size="lg" >{playlist.title}</Text>
                     <Text size="sm" c="gray">{playlist.songs?.length || 0} songs</Text>
                   </Box>
                 </Group>

@@ -34,6 +34,7 @@ export default function Login() {
       dispatch(setTokens({
         accessToken: res.access_token,
         refreshToken: res.refresh_token,
+        user: res.user,
       }));
       navigate('/dashboard');
     } catch (err: any) {
