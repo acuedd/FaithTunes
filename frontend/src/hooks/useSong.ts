@@ -1,6 +1,5 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { useCallback } from 'react';
-import axios from 'axios';
 import type { Song } from '../types';
 import type { RootState } from '../store';
 import {
@@ -15,12 +14,16 @@ import {
   nextSong,
   previousSong,
 } from '../store/slices/songSlice';
-
-const API = import.meta.env.VITE_API_URL;
+import {
+  getSongs as fetchSongsAPI,
+  uploadSong as uploadSongAPI,
+  getSongById as getSongByIdAPI,
+  updateSong as updateSongAPI,
+  deleteSong as deleteSongAPI,
+} from '../services/song.service';
 
 export function useSongs() {
   const dispatch = useDispatch();
-  const token = useSelector((state: RootState) => state.auth.accessToken);
   const songs = useSelector((state: RootState) => state.song.songs);
   const currentSong = useSelector((state: RootState) => state.song.currentSong);
   const songQueue = useSelector((state: RootState) => state.song.songQueue);
@@ -28,45 +31,32 @@ export function useSongs() {
 
 
   const fetchSongs = useCallback(async (): Promise<Song[]> => {
-    const res = await axios.get(`${API}/songs`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    dispatch(setSongs(res.data));
-    return res.data;
-  }, [token, dispatch]);
+    const res = await fetchSongsAPI();
+    dispatch(setSongs(res));
+    return res;
+  }, [, dispatch]);
 
   const uploadSong = useCallback(async (formData: FormData): Promise<Song> => {
-    const res = await axios.post(`${API}/songs/upload`, formData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'multipart/form-data',
-      },
-    });
+    const res = await uploadSongAPI(formData);
     await fetchSongs();
-    return res.data;
-  }, [token]);
+    return res;
+  }, []);
 
   const getSongById = useCallback(async (id: number): Promise<Song> => {
-    const res = await axios.get(`${API}/songs/${id}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    return res.data;
-  }, [token]);
+    const res = await getSongByIdAPI(id);
+    return res;
+  }, []);
 
   const updateSong = useCallback(async (id: number, data: Partial<Song>): Promise<Song> => {
-    const res = await axios.patch(`${API}/songs/${id}`, data, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const res = await updateSongAPI(id, data);
     await fetchSongs();
-    return res.data;
-  }, [token]);
+    return res;
+  }, []);
 
   const deleteSong = useCallback(async (id: number): Promise<void> => {
-    await axios.delete(`${API}/songs/${id}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    await deleteSongAPI(id);
     dispatch(deleteSongById(id));
-  }, [token, dispatch]);
+  }, [dispatch]);
 
   const setCurrent = (song: Song | null) => dispatch(setCurrentSong(song));
   const setQueue = (queue: Song[]) => dispatch(setSongQueue(queue));

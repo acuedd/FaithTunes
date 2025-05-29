@@ -1,6 +1,4 @@
-import { useSelector } from 'react-redux';
 import { useCallback } from 'react';
-import type { RootState } from '../store';
 import type { User } from '../types';
 import {
   getUsers as apiGetUsers,
@@ -10,31 +8,21 @@ import {
 } from '../services/user.service';
 
 export function useUser() {
-  const token = useSelector((state: RootState) => state.auth.accessToken);
-
-  const getAuthHeaders = useCallback(() => {
-    return {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
-  }, [token]);
-
   const getUsers = useCallback(async (): Promise<User[]> => {
-    return await apiGetUsers(getAuthHeaders());
-  }, [getAuthHeaders]);
+    return await apiGetUsers();
+  }, []);
 
   const createUser = useCallback(async (data: Partial<User>): Promise<User> => {
-    return await apiCreateUser(data, getAuthHeaders());
-  }, [getAuthHeaders]);
+    return await apiCreateUser(data);
+  }, []);
 
   const updateUser = useCallback(async (id: number, data: Partial<User>): Promise<User> => {
-    return await apiUpdateUser(id, data, getAuthHeaders());
-  }, [getAuthHeaders]);
+    return await apiUpdateUser(id, data);
+  }, []);
 
   const deleteUser = useCallback(async (id: number): Promise<void> => {
-    await apiDeleteUser(id, getAuthHeaders());
-  }, [getAuthHeaders]);
+    await apiDeleteUser(id);
+  }, []);
 
   return {
     getUsers,

@@ -1,23 +1,21 @@
-import axios from 'axios';
+import api from '../api/axiosInstance';
 import type { User } from '../types';
 
-const API = import.meta.env.VITE_API_URL;
-
-export const getUsers = async (config = {}): Promise<User[]> => {
-  const res = await axios.get(`${API}/users`, config);
+export const getUsers = async (): Promise<User[]> => {
+  const res = await api.get('/users');
   return res.data;
 };
 
-export const createUser = async (data: Partial<User>, config = {}) => {
-  const res = await axios.post(`${API}/users`, data, config);
+export const createUser = async (data: Partial<User>) => {
+  const res = await api.post('/users', data);
   return res.data;
 };
 
-export const updateUser = async (id: number, data: Partial<User>, config = {}) => {
-  const res = await axios.patch(`${API}/users/${id}`, data, config);
+export const updateUser = async (id: number, data: Partial<User>) => {
+  const res = await api.patch(`/users/${id}`, data);
   return res.data;
 };
 
-export const deleteUser = async (id: number, config = {}) => {
-  await axios.delete(`${API}/users/${id}`, config);
+export const deleteUser = async (id: number) => {
+  await api.delete(`/users/${id}`);
 };
