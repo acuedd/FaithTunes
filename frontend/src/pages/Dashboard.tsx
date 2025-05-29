@@ -5,33 +5,38 @@ import {
   Group,
   Stack,
   Text,
-  ScrollArea
+  ScrollArea,
+  Drawer,
+  Burger,
 } from '@mantine/core';
+import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import type { Song } from '../types';
+import { useAuth } from '../hooks/useAuth';
+import { useSongs } from '../hooks/useSong';
+import { usePlaylists } from '../hooks/usePlaylists';
 import SongList from '../components/SongList';
 import PlaylistList from '../components/PlaylistList';
 import CreatePlaylistModal from '../components/CreatePlaylistModal';
 import PlayerFooter from '../components/PlayerFooter';
-import { IconPlus, } from '@tabler/icons-react';
-import { useSongs } from '../hooks/useSong';
-import { usePlaylists } from '../hooks/usePlaylists';
-import type { Song } from '../types';
 import UploadSongModal from '../components/UploadSongModal';
 import EditSongModal from '../components/EditSongModal';
 import PlaylistDetail from '../components/PlaylistDetail';
-import { useAuth } from '../hooks/useAuth';
 import { Header } from '../components/Header';
+import { MobileMenu } from '../components/MobileMenu';
 
 export default function Dashboard() {
   const { logoutUser } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
-  const initialTab = (queryParams.get('tab') as 'songs' | 'playlists') || 'songs';
   const { fetchSongs, songs } = useSongs();
   const { fetchPlaylists, clearSelectionPlaylist } = usePlaylists();
   const { selectedPlaylist, pickPlaylist, playlists } = usePlaylists();
+  const [drawerOpened, { toggle: toggleDrawer }] = useDisclosure(false);
+  const isMobile = useMediaQuery('(max-width: 768px)');
+  const queryParams = new URLSearchParams(location.search);
+  const initialTab = (queryParams.get('tab') as 'songs' | 'playlists') || 'songs';
   const [uploadOpen, setUploadOpen] = useState(false);
   const [createOpen, setCreateOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
@@ -83,20 +88,14 @@ export default function Dashboard() {
 
       }}
     >
-      <Header />
+      <Header onToggleDrawer={toggleDrawer} />
 
-      <AppShell.Navbar style={{}} p="md">
-        <Stack gap="sm">
-          <Button fullWidth variant="light" onClick={() => setUploadOpen(true)} leftSection={<IconPlus size={14} />}>
-            Subir canción
-          </Button>
-          <Button fullWidth variant="light" onClick={() => setCreateOpen(true)}>
-            Crear playlist
-          </Button>
-          <Text size="sm" c="dimmed">Listas: {playlists.length}</Text>
-          <Text size="sm" c="dimmed">Canciones: {songs.length}</Text>
-        </Stack>
-      </AppShell.Navbar>
+      <MobileMenu
+        setUploadOpen={setUploadOpen}
+        setCreateOpen={setCreateOpen}
+        playlistsLength={playlists.length}
+        songsLength={songs.length}
+      />
 
       <AppShell.Main>
         <Group mb="md" gap="sm">

@@ -9,18 +9,25 @@ import {
   Title,
   ActionIcon,
 } from '@mantine/core';
+import { useDisclosure, useMediaQuery } from '@mantine/hooks';
+import { useSongs } from '../hooks/useSong';
+import { usePlaylists } from '../hooks/usePlaylists';
 import { IconEdit, IconTrash } from '@tabler/icons-react';
 import { useUser } from '../hooks/useUser';
 import type { User } from '../types';
 import { Header } from '../components/Header';
+import { MobileMenu } from '../components/MobileMenu';
 
 export default function UserAdmin() {
+  const [drawerOpened, { toggle: toggleDrawer }] = useDisclosure(false);
+  const isMobile = useMediaQuery('(max-width: 768px)');
   const { getUsers, createUser, updateUser, deleteUser } = useUser();
   const [users, setUsers] = useState<User[]>([]);
   const [opened, setOpened] = useState(false);
   const [form, setForm] = useState<Partial<User> & { password?: string }>({});
   const [isEditing, setIsEditing] = useState(false);
-
+  const { playlists } = usePlaylists();
+  const { songs } = useSongs();
 
   const handleSave = async () => {
     if (isEditing && form.id) {
@@ -56,7 +63,11 @@ export default function UserAdmin() {
 
       }}
     >
-      <Header />
+      <Header onToggleDrawer={toggleDrawer} />
+      <MobileMenu
+        playlistsLength={playlists.length}
+        songsLength={songs.length}
+      />
       <AppShell.Main>
         <Title order={2}>Administración de Usuarios</Title>
         <Button my="md" onClick={() => { setForm({}); setIsEditing(false); setOpened(true); }}>

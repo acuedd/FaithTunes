@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import {
   AppShell,
@@ -11,20 +10,28 @@ import {
   ActionIcon,
   Menu,
   Avatar,
+  Burger,
 } from '@mantine/core';
 import { ToggleThemeButton } from '../components/ToggleThemeButton';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { IconLogout, IconPlus, IconUser } from '@tabler/icons-react';
 
-export const Header: React.FC = () => {
+interface HeaderProps {
+  onToggleDrawer: () => void;
+}
+
+export const Header: React.FC<HeaderProps> = ({ onToggleDrawer }) => {
   const { user, isAuthenticated, logoutUser } = useAuth();
   const navigate = useNavigate();
 
   return (
     <AppShell.Header style={{}}>
       <Group justify="space-between" p="sm">
-        <Title order={3} >MusicApp 🎶</Title>
+        <Group>
+          <Burger onClick={onToggleDrawer} hiddenFrom="sm" size="sm" />
+          <Title order={3}>MusicApp 🎶</Title>
+        </Group>
         <Group>
           <ToggleThemeButton />
           <Menu shadow="md" width={200} position="bottom-end" withinPortal>
