@@ -47,10 +47,10 @@ export const Header: React.FC<HeaderProps> = ({ onToggleDrawer }) => {
               </Avatar>
             </Menu.Target>
             <Menu.Dropdown>
-              <Menu.Item onClick={() => navigate('/dashboard/profile')}>Mi perfil</Menu.Item>
+              <Menu.Item onClick={() => navigate('/profile')}>Mi perfil</Menu.Item>
 
               {user?.role === 'admin' && (
-                <Menu.Item onClick={() => navigate('/dashboard/users')}>Admin usuarios</Menu.Item>
+                <Menu.Item onClick={() => navigate('/users')}>Admin usuarios</Menu.Item>
               )}
 
               <Menu.Divider />

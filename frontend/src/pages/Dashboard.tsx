@@ -23,8 +23,8 @@ import PlayerFooter from '../components/PlayerFooter';
 import UploadSongModal from '../components/UploadSongModal';
 import EditSongModal from '../components/EditSongModal';
 import PlaylistDetail from '../components/PlaylistDetail';
-import { Header } from '../components/Header';
-import { MobileMenu } from '../components/MobileMenu';
+
+import Layout from '../components/Layout';
 
 export default function Dashboard() {
   const { logoutUser } = useAuth();
@@ -80,92 +80,77 @@ export default function Dashboard() {
   };
 
   return (
-    <AppShell
-      padding="md"
-      header={{ height: 60 }}
-      navbar={{ width: 250, breakpoint: 'sm' }}
-      styles={{
-
-      }}
+    <Layout
+      playlistsLength={playlists.length}
+      songsLength={songs.length}
+      children2={
+        <>
+          <PlayerFooter />
+          <UploadSongModal
+            opened={uploadOpen}
+            onClose={() => setUploadOpen(false)}
+            onUploaded={() => {
+              setUploadOpen(false);
+              fetchData();
+            }}
+          />
+          <EditSongModal
+            opened={editOpen}
+            onClose={() => setEditOpen(false)}
+            song={songToEdit}
+            onUpdated={() => {
+              setEditOpen(false);
+              fetchData();
+            }}
+          />
+          <CreatePlaylistModal
+            opened={createOpen}
+            onClose={() => setCreateOpen(false)}
+            onCreated={fetchData}
+          />
+        </>
+      }
     >
-      <Header onToggleDrawer={toggleDrawer} />
-
-      <MobileMenu
-        setUploadOpen={setUploadOpen}
-        setCreateOpen={setCreateOpen}
-        playlistsLength={playlists.length}
-        songsLength={songs.length}
-      />
-
-      <AppShell.Main>
-        <Group mb="md" gap="sm">
-          <Button
-            radius="xl"
-            variant={activeTab === 'songs' ? 'filled' : 'outline'}
-            color={activeTab === 'songs' ? 'grape' : 'gray'}
-            onClick={() => {
-              navigate('/dashboard?tab=songs'); // Push to history
+      <Group mb="md" gap="sm">
+        <Button
+          radius="xl"
+          variant={activeTab === 'songs' ? 'filled' : 'outline'}
+          color={activeTab === 'songs' ? 'grape' : 'gray'}
+          onClick={() => {
+            navigate('/dashboard?tab=songs'); // Push to history
+          }}
+        >
+          Songs
+        </Button>
+        <Button
+          radius="xl"
+          variant={activeTab === 'playlists' ? 'filled' : 'outline'}
+          color={activeTab === 'playlists' ? 'grape' : 'gray'}
+          onClick={() => {
+            navigate('/dashboard?tab=playlists'); // Push to history
+          }}
+        >
+          Playlists
+        </Button>
+      </Group>
+      <ScrollArea h="100%">
+        {selectedPlaylist && activeTab === 'playlists' ? (
+          <PlaylistDetail />
+        ) : activeTab === 'songs' ? (
+          <SongList
+            songs={songs}
+            onEdit={handleEditClick}
+          />
+        ) : (
+          <PlaylistList
+            onChange={fetchData}
+            onSelect={(playlist) => {
+              pickPlaylist(playlist);
+              navigate(`/dashboard?tab=playlists&playlistselected=${playlist.id}`);
             }}
-          >
-            Songs
-          </Button>
-          <Button
-            radius="xl"
-            variant={activeTab === 'playlists' ? 'filled' : 'outline'}
-            color={activeTab === 'playlists' ? 'grape' : 'gray'}
-            onClick={() => {
-              navigate('/dashboard?tab=playlists'); // Push to history
-            }}
-          >
-            Playlists
-          </Button>
-        </Group>
-        <ScrollArea h="100%">
-          {selectedPlaylist && activeTab === 'playlists' ? (
-            <PlaylistDetail />
-          ) : activeTab === 'songs' ? (
-            <SongList
-              songs={songs}
-              onEdit={handleEditClick}
-            />
-          ) : (
-            <PlaylistList
-              onChange={fetchData}
-              onSelect={(playlist) => {
-                pickPlaylist(playlist);
-                navigate(`/dashboard?tab=playlists&playlistselected=${playlist.id}`);
-              }}
-            />
-          )}
-        </ScrollArea>
-      </AppShell.Main>
-
-      {<PlayerFooter />}
-
-      <UploadSongModal
-        opened={uploadOpen}
-        onClose={() => setUploadOpen(false)}
-        onUploaded={() => {
-          setUploadOpen(false);
-          fetchData();
-        }}
-      />
-
-      <EditSongModal
-        opened={editOpen}
-        onClose={() => setEditOpen(false)}
-        song={songToEdit}
-        onUpdated={() => {
-          setEditOpen(false);
-          fetchData();
-        }}
-      />
-
-      <CreatePlaylistModal
-        opened={createOpen}
-        onClose={() => setCreateOpen(false)}
-        onCreated={fetchData}
-      />
-    </AppShell>
+          />
+        )}
+      </ScrollArea>
+    </Layout>
   );
 }

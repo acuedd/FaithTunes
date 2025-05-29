@@ -1,10 +1,10 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import type { RootState } from '../store';
 import { useEffect, useState } from 'react';
+import { useAuth } from '../hooks/useAuth';
 
 export const ProtectedRoute = () => {
-  const accessToken = useSelector((state: RootState) => state.auth.accessToken);
+  const { isAuthenticated } = useAuth();
   const location = useLocation();
 
   const [hydrated, setHydrated] = useState(false);
@@ -21,7 +21,7 @@ export const ProtectedRoute = () => {
     );
   }
 
-  if (!accessToken) {
+  if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
