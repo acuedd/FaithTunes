@@ -7,9 +7,9 @@ export interface Song {
   permaUrl: string;
   explicitContent: boolean;
   image?: string;
-  type?: string;         // tipo de canción (e.g., "pop", "rock", etc.)
-  language?: string;     // idioma de la canción
-  year?: number;         // año de publicación
+  type?: string;
+  language?: string;
+  year?: number;
   playCount: number;
 }
 
@@ -33,4 +33,31 @@ export interface User {
   email: string;
   role: 'admin' | 'user';
   password?: string;
+}
+
+export interface SocialLinks {
+  instagram?: string;
+  youtube?: string;
+  spotify?: string;
+  [key: string]: string | undefined;
+}
+
+export interface Artist {
+  id: number;
+  name: string;
+  slug: string;
+  realName?: string;
+  photoUrl?: string;
+  country?: string;
+  birthDate?: string;
+  socialLinks?: SocialLinks;
+  bio?: string;
+  genres?: string[];
+  labels?: string[];
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface ArtistFormData extends Omit<Artist, 'id' | 'slug' | 'photoUrl'> {
+  photo?: File | null;
 }

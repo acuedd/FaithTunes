@@ -10,7 +10,7 @@ import {
   Text
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { IconHome, IconSettings, IconPlus } from '@tabler/icons-react';
+import { IconHome, IconUser, IconPlus } from '@tabler/icons-react';
 import { useMediaQuery } from '@mantine/hooks';
 import { useState } from 'react';
 import { Header } from './Header';
@@ -21,11 +21,17 @@ function NavLinks() {
 
   return (
     <ScrollArea>
-      <Stack gap="md" p="md">
+      <Stack gap="md" >
         <Button variant="subtle" onClick={() => navigate('/')}>
           <Group>
             <IconHome size={20} />
             <span>Home</span>
+          </Group>
+        </Button>
+        <Button variant="subtle" onClick={() => navigate('/artist')}>
+          <Group>
+            <IconUser size={20} />
+            <span>Artistas</span>
           </Group>
         </Button>
       </Stack>

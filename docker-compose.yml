@@ -75,6 +75,8 @@ services:
       mc anonymous set download local/songs
       mc mb local/playlists || true &&
       mc anonymous set download local/playlists
+      mc mb local/artists || true &&
+      mc anonymous set download local/artists
       "
 volumes:
   mariadbdata:

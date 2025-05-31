@@ -6,6 +6,7 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import UserAdminPage from './pages/UserAdminPage';
 import UserProfilePage from './pages/UserProfilePage';
+import ArtistPage from './pages/Artist';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { useAuth } from './hooks/useAuth';
 
@@ -42,6 +43,7 @@ export default function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/users" element={<UserAdminPage />} />
             <Route path="/profile" element={<UserProfilePage />} />
+            <Route path="/artist" element={<ArtistPage />} />
           </Route>
           <Route
             path="*"
