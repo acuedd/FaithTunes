@@ -1,7 +1,5 @@
 import { DataSource } from 'typeorm';
-import { Playlist } from './playlists/entities/playlist.entity';
-import { Song } from './songs/entities/song.entity';
-import { User } from './users/entities/user.entity';
+import 'dotenv/config';
 
 export default new DataSource({
   type: 'mariadb',
@@ -10,7 +8,8 @@ export default new DataSource({
   username: process.env.DB_USER,
   password: process.env.DB_PASS,
   database: process.env.DB_NAME,
-  entities: [Playlist, Song, User],
+  entities: ['src/**/*.entity.ts'],
   migrations: ['src/migrations/*.ts'],
   synchronize: false,
+  logging: true,
 });

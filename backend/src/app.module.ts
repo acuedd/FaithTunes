@@ -9,6 +9,7 @@ import { UsersModule } from './users/users.module';
 import { SongsModule } from './songs/songs.module';
 import { PlaylistsModule } from './playlists/playlists.module';
 import { SharedModule } from './shared/shared.module';
+import { ArtistModule } from './artist/artist.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { SharedModule } from './shared/shared.module';
     SongsModule,
     PlaylistsModule,
     SharedModule,
+    ArtistModule,
   ],
   controllers: [AppController],
   providers: [AppService],
