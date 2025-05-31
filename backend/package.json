@@ -21,8 +21,8 @@
     "test:integration": "jest --config ./test/jest-integration.json",
     "test:unit": "jest --testPathPattern=unit",
     "test:all": "npm run test:unit && npm run test:integration && npm run test:e2e",
-    "typeorm": "ts-node --esm ./node_modules/typeorm/cli",
-    "migration:generate": "npm run typeorm -- migration:generate src/migrations/NameOfMigration -d src/ormconfig.ts",
+    "typeorm": "ts-node --esm ./node_modules/typeorm/cli.js",
+    "migration:generate": "npm run typeorm -- migration:generate src/migrations/$NAME -d src/ormconfig.ts",
     "migration:run": "npm run typeorm -- migration:run -d src/ormconfig.ts",
     "migration:revert": "npm run typeorm -- migration:revert -d src/ormconfig.ts"
   },
@@ -38,6 +38,7 @@
     "bcrypt": "^6.0.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
+    "dotenv": "^16.5.0",
     "helmet": "^8.1.0",
     "minio": "^8.0.5",
     "multer": "^2.0.0",
