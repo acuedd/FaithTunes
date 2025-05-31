@@ -4,7 +4,9 @@ import {
     Column,
     CreateDateColumn,
     UpdateDateColumn,
+    OneToMany,
 } from 'typeorm';
+import { ArtistContent } from '../../artist/entities/artist-content.entity';
 
 @Entity('songs')
 export class Song {
@@ -49,6 +51,9 @@ export class Song {
 
     @Column({ type: 'json', nullable: true })
     list: any;
+
+    @OneToMany(() => ArtistContent, artistContent => artistContent.content)
+    artistContents: ArtistContent[];
 
     @CreateDateColumn()
     createdAt: Date;

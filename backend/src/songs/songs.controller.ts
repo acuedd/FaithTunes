@@ -23,6 +23,7 @@ import { minioClient } from '../shared/utils/minio.client';
 import { ApiBearerAuth, ApiConsumes, ApiTags, ApiBody, ApiParam } from '@nestjs/swagger';
 import { Song } from './entities/song.entity';
 import { NotFoundException } from '@nestjs/common';
+import { AddArtistToSongDto } from './dto/add-artist-to-song.dto';
 
 
 @ApiTags('Songs')
@@ -124,5 +125,35 @@ export class SongsController {
     @Body() dto: UpdateSongDto,
   ): Promise<Song> {
     return this.songsService.update(id, dto);
+  }
+
+  @ApiParam({ name: 'id', type: Number, description: 'ID of the song to which the artist will be added' })
+  @ApiBody({
+    description: 'Add an artist to a song with role and optional contribution',
+    schema: {
+      type: 'object',
+      properties: {
+        artistId: { type: 'number', description: 'ID of the artist' },
+        role: {
+          type: 'string',
+          enum: ['primary', 'featured', 'guest', 'host'],
+          description: 'Role of the artist in the song'
+        },
+        contribution: {
+          type: 'string',
+          description: 'Short description of the contribution (optional)',
+        },
+      },
+      required: ['artistId', 'role'],
+    },
+  })
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @Post(':id/artists')
+  addArtistToSong(
+    @Param('id', ParseIntPipe) id: number,    // ParseIntPipe transforma 'id' a número
+    @Body() addArtistToSongDto: AddArtistToSongDto
+  ) {
+    return this.songsService.addArtistToSong(id, addArtistToSongDto);
   }
 }
