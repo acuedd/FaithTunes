@@ -62,6 +62,7 @@ export class SongsController {
         language: { type: 'string' },
         year: { type: 'number' },
         image: { type: 'string' },
+        album_id: { type: 'number' },
       },
       required: ['file', 'title', 'type'],
     },
@@ -116,6 +117,22 @@ export class SongsController {
     return this.songsService.remove(id);
   }
 
+  @ApiBody({
+    description: 'Update a song including optional album_id.',
+    schema: {
+      type: 'object',
+      properties: {
+        title: { type: 'string' },
+        subtitle: { type: 'string' },
+        headerDesc: { type: 'string' },
+        type: { type: 'string' },
+        language: { type: 'string' },
+        year: { type: 'number' },
+        image: { type: 'string' },
+        album_id: { type: 'number' },
+      },
+    },
+  })
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Patch(':id')

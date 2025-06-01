@@ -1,27 +1,4 @@
-import { IsBoolean, IsOptional, IsString, IsNumber } from 'class-validator';
+import { PartialType } from '@nestjs/swagger';
+import { CreateSongDto } from './create-song.dto';
 
-export class UpdateSongDto {
-  @IsOptional()
-  @IsString()
-  title?: string;
-
-  @IsOptional()
-  @IsString()
-  subtitle?: string;
-
-  @IsOptional()
-  @IsString()
-  type?: string;
-
-  @IsOptional()
-  @IsString()
-  language?: string;
-
-  @IsOptional()
-  @IsNumber()
-  year?: number;
-
-  @IsOptional()
-  @IsBoolean()
-  explicitContent?: boolean;
-}
+export class UpdateSongDto extends PartialType(CreateSongDto) { }

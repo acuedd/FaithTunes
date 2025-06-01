@@ -10,6 +10,7 @@ import { SongsModule } from './songs/songs.module';
 import { PlaylistsModule } from './playlists/playlists.module';
 import { SharedModule } from './shared/shared.module';
 import { ArtistModule } from './artist/artist.module';
+import { AlbumsModule } from './albums/albums.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { ArtistModule } from './artist/artist.module';
     PlaylistsModule,
     SharedModule,
     ArtistModule,
+    AlbumsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

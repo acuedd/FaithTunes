@@ -57,4 +57,8 @@ export class CreateSongDto {
   @ApiProperty({ required: false })
   @IsOptional()
   list?: any;
+
+  @IsOptional()
+  @IsNumber()
+  album_id?: number;
 }

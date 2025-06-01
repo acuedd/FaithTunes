@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
 import { ArtistContent } from './artist-content.entity';
+import { Album } from '../../albums/entities/album.entity';
 
 @Entity('artists')
 export class Artist {
@@ -35,6 +36,9 @@ export class Artist {
 
   @OneToMany(() => ArtistContent, ac => ac.artist)
   artistContents: ArtistContent[];
+
+  @OneToMany(() => Album, (album) => album.artist)
+  albums: Album[];
 
   @CreateDateColumn()
   createdAt: Date;

@@ -5,8 +5,11 @@ import {
     CreateDateColumn,
     UpdateDateColumn,
     OneToMany,
+    ManyToOne,
+    JoinColumn,
 } from 'typeorm';
 import { ArtistContent } from '../../artist/entities/artist-content.entity';
+import { Album } from '../../albums/entities/album.entity'; // ✅ Importa la entidad
 
 @Entity('songs')
 export class Song {
@@ -54,6 +57,13 @@ export class Song {
 
     @OneToMany(() => ArtistContent, artistContent => artistContent.content)
     artistContents: ArtistContent[];
+
+    @ManyToOne(() => Album, (album) => album.songs, { nullable: true, onDelete: 'SET NULL' })
+    @JoinColumn({ name: 'album_id' }) // este es el campo en la tabla "songs"
+    album: Album;
+
+    @Column({ nullable: true })
+    album_id: number;
 
     @CreateDateColumn()
     createdAt: Date;
