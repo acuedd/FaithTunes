@@ -59,6 +59,7 @@ export class CreateSongDto {
   list?: any;
 
   @IsOptional()
+  @Transform(({ value }) => value !== undefined ? Number(value) : undefined)
   @IsNumber()
   album_id?: number;
 }

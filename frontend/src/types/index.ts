@@ -13,6 +13,15 @@ export interface Song {
   playCount: number;
 }
 
+export interface Album {
+  id: number;
+  title: string;
+  release_date?: string;
+  cover_url?: string;
+  artist_id: number;
+  artist?: any;
+}
+
 export interface Playlist {
   id: number;
   title: string;

@@ -32,18 +32,7 @@ export class AlbumsController {
   @Post()
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @UseInterceptors(
-    FileInterceptor('cover', {
-      storage: memoryStorage(),
-      fileFilter: (req, file, cb) => {
-        if (!file.mimetype.startsWith('image/')) {
-          return cb(new BadRequestException('Only image files are allowed'), false);
-        }
-        cb(null, true);
-      },
-      limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
-    }),
-  )
+  @UseInterceptors(FileInterceptor('cover'))
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     description: 'Create a new album. Image is optional.',
@@ -52,7 +41,7 @@ export class AlbumsController {
       properties: {
         title: { type: 'string' },
         release_date: { type: 'string', format: 'date' },
-        artist_id: { type: 'number' },
+        artist_id: { type: 'string' },
         cover: {
           type: 'string',
           format: 'binary',
@@ -69,7 +58,7 @@ export class AlbumsController {
     let cover_url: string | null = null;
 
     if (cover) {
-      const bucket = 'covers';
+      const bucket = 'albums';
       const filename = `${Date.now()}-${cover.originalname}`;
       const sanitized = this.albumsService.sanitizeFilename(filename);
       await minioClient.putObject(bucket, sanitized, cover.buffer);

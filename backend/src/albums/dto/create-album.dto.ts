@@ -1,4 +1,5 @@
-import { IsNotEmpty, IsString, IsDateString, IsUrl, IsInt } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsNotEmpty, IsString, IsDateString, IsUrl, IsInt, IsOptional } from 'class-validator';
 
 export class CreateAlbumDto {
   @IsString()
@@ -8,9 +9,11 @@ export class CreateAlbumDto {
   @IsDateString()
   release_date: string;
 
+  @IsOptional()
   @IsUrl()
   cover_url: string;
 
+  @Type(() => Number)
   @IsInt()
   artist_id: number;
 }
