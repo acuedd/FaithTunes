@@ -2,7 +2,7 @@ import {
   Modal,
   Stepper,
   Button,
-  Select,
+  Autocomplete,
   Group,
   Stack,
   Radio,
@@ -96,11 +96,21 @@ export default function UploadSongMultiStepModal({ opened, onClose, onUploaded }
             )}
 
             {mode === 'existing' && (
-              <Select
+              <Autocomplete
                 label="Selecciona un álbum"
                 value={selectedAlbum}
-                onChange={(value) => setSelectedAlbum(value || '')}
-                data={albums.map((a) => ({ value: String(a.id), label: a.title }))}
+                onChange={(value) => {
+                  setSelectedAlbum(value);
+                  const matchedAlbum = albums.find((a) => a.title === value);
+                  if (matchedAlbum) {
+                    setAlbumId(matchedAlbum.id);
+                  } else {
+                    setAlbumId(null);
+                  }
+                }}
+                data={albums.map((a) => a.title)}
+                placeholder="Escribe para buscar..."
+                clearable
               />
             )}
 

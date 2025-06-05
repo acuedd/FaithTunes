@@ -65,13 +65,10 @@ export default function AlbumForm({ onFormDataChange, defaultValues }: Props) {
         data={artists.map((a) => ({ value: String(a.id), label: a.name }))}
         value={artistName}
         onChange={(value) => {
+          setArtistName(value);
           const matchedArtist = artists.find((a) => a.name === value);
           if (matchedArtist) {
             setArtistId(String(matchedArtist.id));
-            setArtistName(String(matchedArtist.name));
-          } else if (value === '') {
-            setArtistId('');
-            setArtistName('');
           }
         }}
         required
