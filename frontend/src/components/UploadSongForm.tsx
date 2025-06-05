@@ -16,9 +16,10 @@ import { notifications } from '@mantine/notifications';
 
 interface UploadSongFormProps {
   onUploaded: () => void;
+  albumId?: number; // Optional album ID if needed
 }
 
-export default function UploadSongForm({ onUploaded }: UploadSongFormProps) {
+export default function UploadSongForm({ onUploaded, albumId }: UploadSongFormProps) {
   const [title, setTitle] = useState('');
   const [subtitle, setSubtitle] = useState('');
   const [type, setType] = useState('');
@@ -42,6 +43,7 @@ export default function UploadSongForm({ onUploaded }: UploadSongFormProps) {
     formData.append('language', language);
     formData.append('year', year ? String(year) : '');
     formData.append('explicitContent', String(explicitContent));
+    formData.append('album_id', albumId ? String(albumId) : '');
 
     setUploading(true);
     try {

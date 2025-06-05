@@ -23,6 +23,7 @@ import PlayerFooter from '../components/PlayerFooter';
 import UploadSongModal from '../components/UploadSongModal';
 import EditSongModal from '../components/EditSongModal';
 import PlaylistDetail from '../components/PlaylistDetail';
+import UploadSongMultiStepModal from '../components/UploadSongMultiStepModal';
 
 import Layout from '../components/Layout';
 
@@ -86,12 +87,12 @@ export default function Dashboard() {
       children2={
         <>
           <PlayerFooter />
-          <UploadSongModal
+          <UploadSongMultiStepModal
             opened={uploadOpen}
             onClose={() => setUploadOpen(false)}
             onUploaded={() => {
               setUploadOpen(false);
-              fetchData();
+              fetchData(); // refresca la lista cuando termina
             }}
           />
           <EditSongModal

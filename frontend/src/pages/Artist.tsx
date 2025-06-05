@@ -2,17 +2,11 @@ import { useEffect, useState } from 'react';
 import { TextInput, Button, Modal, Table, Group, Title, Box, Stack } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
-import {
-  getArtists,
-  createArtist,
-  updateArtist,
-  deleteArtist,
-} from '../services/artist.service';
+import { useArtist } from '../hooks/useArtist';
 import type { Artist } from '../types';
 import Layout from '../components/Layout';
 
 export default function ArtistPage() {
-  const [artists, setArtists] = useState<Artist[]>([]);
   const [opened, setOpened] = useState(false);
   const [editing, setEditing] = useState<Artist | null>(null);
   const [image, setImage] = useState<File | null>(null);
@@ -45,14 +39,7 @@ export default function ArtistPage() {
     },
   });
 
-  const fetchArtists = async () => {
-    const data = await getArtists();
-    setArtists(data);
-  };
-
-  useEffect(() => {
-    fetchArtists();
-  }, []);
+  const { artists, createArtist, updateArtist, deleteArtist, refreshArtists } = useArtist();
 
   const handleSubmit = async (values: {
     name: string;
@@ -90,7 +77,7 @@ export default function ArtistPage() {
       await createArtist(formData);
     }
 
-    fetchArtists();
+    refreshArtists();
     setOpened(false);
     setEditing(null);
     form.reset();
@@ -99,7 +86,6 @@ export default function ArtistPage() {
 
   const handleDelete = async (id: number) => {
     await deleteArtist(id);
-    fetchArtists();
   };
 
   function handleEdit(artist: Artist): void {

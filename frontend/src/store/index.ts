@@ -7,12 +7,16 @@ import authReducer from './slices/authSlice';
 import playlistReducer from './slices/playlistSlice';
 import songReducer from './slices/songSlice';
 import playerReducer from './slices/playerSlice';
+import albumReducer from './slices/albumSlice';
+import artistReducer from './slices/artistSlice';
 
 const rootReducer = combineReducers({
   auth: authReducer,
   playlist: playlistReducer,
   song: songReducer,
   player: playerReducer,
+  albums: albumReducer,
+  artists: artistReducer
 });
 
 const persistConfig = {
