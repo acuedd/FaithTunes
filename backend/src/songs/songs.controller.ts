@@ -12,6 +12,7 @@ import {
   Delete,
   Patch,
   ParseIntPipe,
+  Req,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
@@ -77,6 +78,7 @@ export class SongsController {
     const sanitized = this.songsService.sanitizeFilename(rawFilename);
     await minioClient.putObject(bucket, sanitized, file.buffer);
     const publicUrl = `${process.env.PUBLIC_S3_URL}/${bucket}/${sanitized}`;
+    const userId = req.user?.id;
 
     const newSong = await this.songsService.create({
       ...dto,
@@ -85,7 +87,8 @@ export class SongsController {
       explicitContent: false,
       listCount: 0,
       list: {},
-    });
+      authorized: false,
+    }, userId);
 
     return newSong;
   }
@@ -140,8 +143,10 @@ export class SongsController {
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateSongDto,
+    @Request() req,
   ): Promise<Song> {
-    return this.songsService.update(id, dto);
+    const userId = req.user?.id;
+    return this.songsService.update(id, dto, userId);
   }
 
   @ApiParam({ name: 'id', type: Number, description: 'ID of the song to which the artist will be added' })

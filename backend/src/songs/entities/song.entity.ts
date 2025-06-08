@@ -65,6 +65,15 @@ export class Song {
     @Column({ nullable: true })
     album_id: number;
 
+    @Column({ name: 'authorized', default: false })
+    authorized: boolean;
+
+    @Column({ name: 'created_by', nullable: false })
+    createdBy: number;
+
+    @Column({ name: 'updated_by', nullable: true })
+    updatedBy?: number;
+
     @CreateDateColumn()
     createdAt: Date;
 

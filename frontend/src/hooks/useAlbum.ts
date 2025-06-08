@@ -1,15 +1,15 @@
 // src/hooks/useAlbum.ts
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import type { RootState, AppDispatch } from '../store';
 import { setAlbums } from '../store/slices/albumSlice';
 import {
-  getAlbums,
   createAlbum,
   updateAlbum,
   deleteAlbum,
   getAlbum,
 } from '../services/albums.service';
+import { fetchAlbums } from '../store/slices/albumSlice';
 
 export const useAlbum = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -18,18 +18,14 @@ export const useAlbum = () => {
   const loading = useSelector((state: RootState) => state.albums.loading);
   const error = useSelector((state: RootState) => state.albums.error);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await getAlbums();
-        dispatch(setAlbums(data));
-      } catch (err) {
-        console.error('Error loading albums:', err);
-      }
-    };
 
-    fetchData();
+  const refreshAlbums = useCallback(() => {
+    dispatch(fetchAlbums());
   }, [dispatch]);
+
+  useEffect(() => {
+    refreshAlbums();
+  }, [refreshAlbums]);
 
   const handleCreateAlbum = async (formData: FormData) => {
     return await createAlbum(formData);
@@ -55,5 +51,6 @@ export const useAlbum = () => {
     updateAlbum: handleUpdateAlbum,
     deleteAlbum: handleDeleteAlbum,
     getAlbum: handleGetAlbum,
+    refreshAlbums,
   };
 };

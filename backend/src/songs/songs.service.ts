@@ -31,8 +31,11 @@ export class SongsService {
     return `${clean}${ext}`;
   }
 
-  async create(data: Partial<Song>): Promise<Song> {
-    const song = this.songRepository.create(data);
+  async create(data: Partial<Song>, userId: number): Promise<Song> {
+    const song = this.songRepository.create({
+      ...data,
+      createdBy: userId,
+    });
     return this.songRepository.save(song);
   }
 
@@ -46,8 +49,11 @@ export class SongsService {
     return song;
   }
 
-  async update(id: number, data: Partial<Song>): Promise<Song> {
-    await this.songRepository.update(id, data);
+  async update(id: number, data: Partial<Song>, userId: number): Promise<Song> {
+    await this.songRepository.update(id, {
+      ...data,
+      updatedBy: userId,
+    });
     return this.findById(id);
   }
 
