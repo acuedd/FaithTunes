@@ -93,4 +93,8 @@ export class SongsService {
     // 4. Guardar la relación en la base de datos
     return await this.artistContentRepository.save(artistContent);
   }
+
+  async findAuthorized(): Promise<Song[]> {
+    return this.songRepository.find({ where: { authorized: true } });
+  }
 }

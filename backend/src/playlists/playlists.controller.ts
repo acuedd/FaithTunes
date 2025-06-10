@@ -188,4 +188,10 @@ export class PlaylistsController {
     const imageUrl = `${process.env.MINIO_PUBLIC_URL}/${bucketName}/${fileName}`;
     return this.playlistsService.setPlaylistImage(id, imageUrl);
   }
+
+  @Get('public')
+  async getPublicPlaylists() {
+    return this.playlistsService.findAllWithAuthorizedSongs();
+  }
+
 }

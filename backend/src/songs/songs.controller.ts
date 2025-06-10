@@ -178,4 +178,9 @@ export class SongsController {
   ) {
     return this.songsService.addArtistToSong(id, addArtistToSongDto);
   }
+
+  @Get('public')
+  async findPublicSongs(): Promise<Song[]> {
+    return this.songsService.findAuthorized();
+  }
 }

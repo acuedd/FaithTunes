@@ -131,4 +131,15 @@ export class PlaylistsService {
     playlist.image = filename;
     return this.playlistRepository.save(playlist);
   }
+
+  async findAllWithAuthorizedSongs() {
+    const playlists = await this.playlistRepository.find({
+      relations: ['songs'],
+    });
+
+    return playlists.map((playlist) => ({
+      ...playlist,
+      songs: playlist.songs.filter((song) => song.authorized),
+    }));
+  }
 }

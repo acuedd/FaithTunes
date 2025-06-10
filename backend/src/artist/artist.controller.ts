@@ -165,4 +165,9 @@ export class ArtistController {
   remove(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.artistService.remove(Number(id));
   }
+
+  @Get('public')
+  async getPublicPlaylists() {
+    return this.artistService.findAll();
+  }
 }
