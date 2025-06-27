@@ -11,6 +11,7 @@ export interface Song {
   language?: string;
   year?: number;
   playCount: number;
+  authorized: boolean;
 }
 
 export interface Album {

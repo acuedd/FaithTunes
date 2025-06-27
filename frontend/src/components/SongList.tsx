@@ -17,6 +17,8 @@ import {
   IconEdit,
   IconDotsVertical,
   IconSearch,
+  IconCheck,
+  IconX,
 } from '@tabler/icons-react';
 import type { Song } from '../types';
 import { useSongs } from '../hooks/useSong';
@@ -32,6 +34,7 @@ interface Props {
 export default function SongList({ songs, onEdit }: Props) {
   const {
     deleteSong,
+    updateAuthorization,
   } = useSongs();
 
   const { setCurrentSongHandler } = usePlayer();
@@ -99,6 +102,15 @@ export default function SongList({ songs, onEdit }: Props) {
                     <Text size="sm" c="dimmed">
                       {song.subtitle}
                     </Text>
+                    {song.authorized ? (
+                      <Group gap={4} mt={4}>
+                        <Text size="xs" c="green">Autorizada</Text>
+                      </Group>
+                    ) : (
+                      <Group gap={4} mt={4}>
+                        <Text size="xs" c="red">No autorizada</Text>
+                      </Group>
+                    )}
                   </Box>
                 </Group>
                 <Menu shadow="md" width={200}>
@@ -120,6 +132,24 @@ export default function SongList({ songs, onEdit }: Props) {
                       <Group gap={8}>
                         <IconTrash size={16} />
                         <span>Eliminar</span>
+                      </Group>
+                    </Menu.Item>
+                    <Menu.Item
+                      onClick={() => updateAuthorization(song.id, !song.authorized)}
+                      color={song.authorized ? 'red' : 'green'}
+                    >
+                      <Group gap={8}>
+                        {song.authorized ? (
+                          <>
+                            <IconX size={16} />
+                            <span>Desautorizar</span>
+                          </>
+                        ) : (
+                          <>
+                            <IconCheck size={16} />
+                            <span>Autorizar</span>
+                          </>
+                        )}
                       </Group>
                     </Menu.Item>
                     <Menu.Item closeMenuOnClick={false}>

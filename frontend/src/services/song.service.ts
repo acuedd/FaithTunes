@@ -34,3 +34,7 @@ export const getPublicSongs = async (): Promise<Song[]> => {
   const res = await api.get('/songs/public');
   return res.data;
 };
+
+export const updateAuthorization = async (id: number, isAuthorized: boolean): Promise<void> => {
+  await api.patch(`/songs/${id}/authorization`, { isAuthorized });
+};

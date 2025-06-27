@@ -97,4 +97,13 @@ export class SongsService {
   async findAuthorized(): Promise<Song[]> {
     return this.songRepository.find({ where: { authorized: true } });
   }
+
+  async updateAuthorization(id: number, isAuthorized: boolean): Promise<Song> {
+    const song = await this.songRepository.findOneBy({ id });
+    if (!song) {
+      throw new NotFoundException(`Canción con ID ${id} no encontrada`);
+    }
+    song.authorized = isAuthorized;
+    return this.songRepository.save(song);
+  }
 }

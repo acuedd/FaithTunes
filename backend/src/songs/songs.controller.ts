@@ -25,12 +25,18 @@ import { ApiBearerAuth, ApiConsumes, ApiTags, ApiBody, ApiParam } from '@nestjs/
 import { Song } from './entities/song.entity';
 import { NotFoundException } from '@nestjs/common';
 import { AddArtistToSongDto } from './dto/add-artist-to-song.dto';
+import { UpdateSongAuthorizationDto } from './dto/update-song-authorization.dto';
 
 
 @ApiTags('Songs')
 @Controller('songs')
 export class SongsController {
   constructor(private readonly songsService: SongsService) { }
+
+  @Get('public')
+  async findPublicSongs(): Promise<Song[]> {
+    return this.songsService.findAuthorized();
+  }
 
   @Post('upload')
   @UseGuards(JwtAuthGuard)
@@ -179,8 +185,24 @@ export class SongsController {
     return this.songsService.addArtistToSong(id, addArtistToSongDto);
   }
 
-  @Get('public')
-  async findPublicSongs(): Promise<Song[]> {
-    return this.songsService.findAuthorized();
+  @Patch(':id/authorization')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiParam({ name: 'id', type: Number })
+  @ApiBody({
+    description: 'Update song authorization status',
+    schema: {
+      type: 'object',
+      properties: {
+        isAuthorized: { type: 'boolean', description: 'Indicates if the song is authorized' },
+      },
+      required: ['isAuthorized'],
+    },
+  })
+  async updateAuthorization(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: UpdateSongAuthorizationDto,
+  ): Promise<Song> {
+    return this.songsService.updateAuthorization(id, dto.isAuthorized);
   }
 }
