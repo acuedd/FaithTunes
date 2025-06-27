@@ -29,3 +29,12 @@ export const updateSong = async (id: number, data: Partial<Song>): Promise<Song>
 export const deleteSong = async (id: number): Promise<void> => {
   await api.delete(`/songs/${id}`);
 };
+
+export const getPublicSongs = async (): Promise<Song[]> => {
+  const res = await api.get('/songs/public');
+  return res.data;
+};
+
+export const updateAuthorization = async (id: number, isAuthorized: boolean): Promise<void> => {
+  await api.patch(`/songs/${id}/authorization`, { isAuthorized });
+};

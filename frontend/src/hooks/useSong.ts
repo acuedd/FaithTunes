@@ -20,6 +20,8 @@ import {
   getSongById as getSongByIdAPI,
   updateSong as updateSongAPI,
   deleteSong as deleteSongAPI,
+  getPublicSongs as getPublicSongsAPI,
+  updateAuthorization as updateAuthorizationAPI
 } from '../services/song.service';
 
 export function useSongs() {
@@ -29,6 +31,12 @@ export function useSongs() {
   const songQueue = useSelector((state: RootState) => state.song.songQueue);
   const isPlaying = useSelector((state: RootState) => state.song.isPlaying);
 
+
+  const getPublicSongs = useCallback(async (): Promise<Song[]> => {
+    const res = await getPublicSongsAPI();
+    dispatch(setSongs(res));
+    return res;
+  }, [dispatch]);
 
   const fetchSongs = useCallback(async (): Promise<Song[]> => {
     const res = await fetchSongsAPI();
@@ -58,6 +66,11 @@ export function useSongs() {
     dispatch(deleteSongById(id));
   }, [dispatch]);
 
+  const updateAuthorization = useCallback(async (id: number, authorized: boolean): Promise<void> => {
+    await updateAuthorizationAPI(id, authorized);
+    await fetchSongs();
+  }, []);
+
   const setCurrent = (song: Song | null) => dispatch(setCurrentSong(song));
   const setQueue = (queue: Song[]) => dispatch(setSongQueue(queue));
   const togglePlay = () => dispatch(play());
@@ -77,11 +90,13 @@ export function useSongs() {
     getSongById,
     updateSong,
     deleteSong,
+    updateAuthorization,
     setCurrent,
     setQueue,
     togglePlay,
     togglePause,
     next,
     previous,
+    getPublicSongs
   };
 }

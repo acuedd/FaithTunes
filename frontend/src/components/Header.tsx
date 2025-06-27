@@ -47,16 +47,23 @@ export const Header: React.FC<HeaderProps> = ({ onToggleDrawer }) => {
               </Avatar>
             </Menu.Target>
             <Menu.Dropdown>
-              <Menu.Item onClick={() => navigate('/profile')}>Mi perfil</Menu.Item>
-
-              {user?.role === 'admin' && (
-                <Menu.Item onClick={() => navigate('/users')}>Admin usuarios</Menu.Item>
+              {isAuthenticated ? (
+                <>
+                  <Menu.Item onClick={() => navigate('/profile')}>Mi perfil</Menu.Item>
+                  {user?.role === 'admin' && (
+                    <Menu.Item onClick={() => navigate('/users')}>Admin usuarios</Menu.Item>
+                  )}
+                  <Menu.Divider />
+                  <Menu.Item color="red" onClick={() => { logoutUser(); navigate('/login'); }}>
+                    Cerrar sesión
+                  </Menu.Item>
+                </>
+              ) : (
+                <>
+                  <Menu.Item onClick={() => navigate('/login')}>Iniciar sesión</Menu.Item>
+                  <Menu.Item onClick={() => navigate('/register')}>Registrarse</Menu.Item>
+                </>
               )}
-
-              <Menu.Divider />
-              <Menu.Item color="red" onClick={() => { logoutUser(); navigate('/login'); }}>
-                Cerrar sesión
-              </Menu.Item>
             </Menu.Dropdown>
           </Menu>
         </Group>
