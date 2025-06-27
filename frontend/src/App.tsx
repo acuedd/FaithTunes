@@ -7,6 +7,7 @@ import Dashboard from './pages/Dashboard';
 import UserAdminPage from './pages/UserAdminPage';
 import UserProfilePage from './pages/UserProfilePage';
 import ArtistPage from './pages/Artist';
+import PublicPlayer from './pages/PublicPlayer';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { useAuth } from './hooks/useAuth';
 
@@ -39,6 +40,7 @@ export default function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/public" element={<PublicPlayer />} />
           <Route element={<ProtectedRoute />}>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/users" element={<UserAdminPage />} />
@@ -51,7 +53,7 @@ export default function App() {
               isAuthenticated ? (
                 <Navigate to="/dashboard" replace />
               ) : (
-                <Navigate to="/login" replace />
+                <Navigate to="/public" replace />
               )
             }
           />

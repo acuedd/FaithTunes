@@ -30,6 +30,12 @@ export function useSongs() {
   const isPlaying = useSelector((state: RootState) => state.song.isPlaying);
 
 
+  const getPublicSongs = useCallback(async (): Promise<Song[]> => {
+    const res = await getPublicSongs();
+    dispatch(setSongs(res));
+    return res;
+  }, [dispatch]);
+
   const fetchSongs = useCallback(async (): Promise<Song[]> => {
     const res = await fetchSongsAPI();
     dispatch(setSongs(res));
@@ -83,5 +89,6 @@ export function useSongs() {
     togglePause,
     next,
     previous,
+    getPublicSongs
   };
 }

@@ -45,9 +45,10 @@ interface LayoutProps {
   playlistsLength: number;
   songsLength: number;
   children2?: React.ReactNode;
+  hideSidebar?: boolean;
 }
 
-export default function Layout({ children, children2, setUploadOpen, setCreateOpen, playlistsLength, songsLength }: React.PropsWithChildren<LayoutProps>) {
+export default function Layout({ children, children2, setUploadOpen, setCreateOpen, playlistsLength, songsLength, hideSidebar }: React.PropsWithChildren<LayoutProps>) {
   const [opened, { toggle: toggleDrawer, close }] = useDisclosure(false);
   const isMobile = useMediaQuery('(max-width: 768px)');
 
@@ -57,7 +58,7 @@ export default function Layout({ children, children2, setUploadOpen, setCreateOp
         padding="md"
         header={{ height: 60 }}
         navbar={
-          !isMobile
+          !isMobile && !hideSidebar
             ? {
               width: 250,
               breakpoint: 'sm',
@@ -67,7 +68,7 @@ export default function Layout({ children, children2, setUploadOpen, setCreateOp
         }
       >
         <Header onToggleDrawer={toggleDrawer} />
-        {!isMobile && (
+        {!isMobile && !hideSidebar && (
           <AppShell.Navbar p="md">
             <Stack gap="sm">
               {setUploadOpen && setCreateOpen && (
@@ -95,7 +96,7 @@ export default function Layout({ children, children2, setUploadOpen, setCreateOp
             </Stack>
           </AppShell.Navbar>
         )}
-        {isMobile && (
+        {isMobile && !hideSidebar && (
           <Drawer
             opened={opened}
             onClose={close}
