@@ -1,98 +1,134 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# 🎵 FaithTunes Backend
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Backend de la plataforma **FaithTunes**: sistema de gestión musical con autenticación, subida y reproducción de canciones, playlists, favoritos y funcionalidades de auditoría.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 📦 Tecnologías principales
 
-## Description
+- [NestJS](https://nestjs.com/) + TypeScript
+- [MySQL](https://www.mysql.com/)
+- [Amazon S3](https://aws.amazon.com/s3/) o [MinIO](https://min.io/) para almacenamiento de archivos
+- JWT Authentication (access + refresh tokens)
+- Docker + Docker Compose
+- Swagger para documentación de API
+- ESLint + Prettier + Husky + Lint-Staged
+- Jest para pruebas unitarias y de integración
+- GitHub Actions (CI/CD opcional)
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+---
 
-## Project setup
+## 📁 Estructura del proyecto
 
-```bash
-$ npm install
+```
+faithtunes-backend/
+├── src/
+│   ├── auth/              # Módulo de autenticación
+│   ├── songs/             # Módulo de canciones
+│   ├── playlists/         # Módulo de playlists
+│   ├── users/             # Módulo de usuarios
+│   ├── albums/            # Módulo de artistas
+│   ├── artist/            # Gestión de workspaces
+│   ├── migrations/        # Canales de comunicación
+│   ├── shared/            # Utilidades, decoradores, excepciones, constantes
+│   ├── storage/           # Servicio de MinIO/S3
+│   └── main.ts            # Bootstrap de la app
+│   ├── ormconfig.ts/      # Configuración y conexión a MySQL
+├── test/                  # Pruebas unitarias e2e
+├── .env                   # Variables de entorno
+├── Dockerfile             # Dockerfile de la app NestJS
+└── README.md              # Este archivo
 ```
 
-## Compile and run the project
+## 🚀 Cómo iniciar el proyecto localmente
 
-```bash
-# development
-$ npm run start
+### 2. Copiar el archivo .env
 
-# watch mode
-$ npm run start:dev
+```
+cp .env.example .env
 
-# production mode
-$ npm run start:prod
 ```
 
-## Run tests
+Y completar las variables necesarias, por ejemplo:
+```
+PORT=3000
 
-```bash
-# unit tests
-$ npm run test
+DB_HOST=db
+DB_PORT=3306
+DB_USER=root
+DB_PASSWORD=faithtunes
+DB_NAME=faithtunes_db
 
-# e2e tests
-$ npm run test:e2e
+JWT_SECRET=mysecret
+JWT_EXPIRATION=3600s
+JWT_REFRESH_EXPIRATION=7d
 
-# test coverage
-$ npm run test:cov
+S3_ENDPOINT=http://minio:9000
+S3_ACCESS_KEY=minio
+S3_SECRET_KEY=minio123
+S3_BUCKET_NAME=songs
+
+UPLOAD_MAX_FILE_SIZE_MB=50
+```
+### 3. Levantar los servicios de docker (generales)
+
+```
+docker-compose up --build
 ```
 
-## Deployment
+Esto levantará:
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+	•	API NestJS en http://localhost:3000
+	•	MySQL en localhost:3306
+	•	MinIO en http://localhost:9000 (admin: minio / minio123)
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+4. Acceder a la documentación Swagger
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+http://localhost:3000/api
+
+
+# 🧪 Ejecutar pruebas
+
+```
+# Unit & Integration tests
+npm run test
+
+# E2E tests
+npm run test:e2e
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
 
-## Resources
+# 🔐 Seguridad y buenas prácticas
 
-Check out a few resources that may come in handy when working with NestJS:
+	•	Validación global con class-validator
+	•	Rate Limiting con Throttler
+	•	CORS habilitado por origen específico
+	•	Tokens firmados con RSA (opcional)
+	•	Authorization por roles y guardias personalizados
+	•	Logger global y auditoría de endpoints
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
 
-## Support
+# 📈 Cobertura mínima
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+El proyecto debe mantener una cobertura mínima del 85%. Puedes verificarla con:
 
-## Stay in touch
+```
+npm run test:cov
+```
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+# 🛠️ Scripts útiles
 
-## License
+```
+npm run start:dev       # Desarrollo
+npm run start:prod      # Producción
+npm run lint            # Lint
+npm run format          # Formatear con Prettier
+npm run test            # Test unitarios
+npm run test:e2e        # Test end-to-end
+```
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
+# 📬 Contacto
+
+Desarrollado por Edward Acu López
+GitHub: @acuedd
+Correo: opcional
+Proyecto: FaithTunes 🎶
