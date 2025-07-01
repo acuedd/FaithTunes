@@ -1,37 +1,48 @@
-import { createSlice } from "@reduxjs/toolkit";
-import type { PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import type { Song } from '../../types';
 
 interface PlayerState {
+  currentSong: Song | null;
   isPlaying: boolean;
-  volume: number;
+  songQueue: Song[];
+  playlistQueue: Song[];
   currentTime: number;
   duration: number;
-  songs: Song[];
-  currentSong: Song | null;
+  volume: number;
 }
 
 const initialState: PlayerState = {
+  currentSong: null,
   isPlaying: false,
-  volume: 1.0, // Default volume level (1.0 = 100%)
+  songQueue: [],
+  playlistQueue: [],
   currentTime: 0,
   duration: 0,
-  songs: [] as Song[],
-  currentSong: null,
+  volume: 1,
 };
 
 const playerSlice = createSlice({
-  name: "player",
+  name: 'player',
   initialState,
   reducers: {
     play: (state) => {
       state.isPlaying = true;
     },
-    togglePlay: (state) => {
-      state.isPlaying = !state.isPlaying;
+    pause: (state) => {
+      state.isPlaying = false;
     },
-    setVolume: (state, action: PayloadAction<number>) => {
-      state.volume = action.payload;
+    setCurrentSong: (state, action: PayloadAction<Song>) => {
+      state.currentSong = action.payload;
+      state.currentTime = 0;
+    },
+    setIsPlaying: (state, action: PayloadAction<boolean>) => {
+      state.isPlaying = action.payload;
+    },
+    setSongQueue: (state, action: PayloadAction<Song[]>) => {
+      state.songQueue = action.payload;
+    },
+    setPlaylistQueue: (state, action: PayloadAction<Song[]>) => {
+      state.playlistQueue = action.payload;
     },
     setCurrentTime: (state, action: PayloadAction<number>) => {
       state.currentTime = action.payload;
@@ -39,28 +50,44 @@ const playerSlice = createSlice({
     setDuration: (state, action: PayloadAction<number>) => {
       state.duration = action.payload;
     },
-    setSongs: (state, action: PayloadAction<[]>) => {
-      state.songs = action.payload;
-    },
-    setCurrentSong: (state, action: PayloadAction<Song | null>) => {
-      state.currentSong = action.payload;
+    setVolume: (state, action: PayloadAction<number>) => {
+      state.volume = action.payload;
     },
     nextSong: (state) => {
-      const currentIndex = state.songs.findIndex(song => song.id === state.currentSong?.id);
-      if (currentIndex !== -1 && currentIndex < state.songs.length - 1) {
-        state.currentSong = state.songs[currentIndex + 1];
-        state.isPlaying = true;
+      const currentIndex = state.songQueue.findIndex(
+        (s) => s.id === state.currentSong?.id
+      );
+      const next = state.songQueue[currentIndex + 1];
+      if (next) {
+        state.currentSong = next;
+        state.currentTime = 0;
       }
     },
     previousSong: (state) => {
-      const currentIndex = state.songs.findIndex(song => song.id === state.currentSong?.id);
-      if (currentIndex > 0) {
-        state.currentSong = state.songs[currentIndex - 1];
-        state.isPlaying = true;
+      const currentIndex = state.songQueue.findIndex(
+        (s) => s.id === state.currentSong?.id
+      );
+      const prev = state.songQueue[currentIndex - 1];
+      if (prev) {
+        state.currentSong = prev;
+        state.currentTime = 0;
       }
     },
   },
 });
 
-export const { play, togglePlay, setVolume, setCurrentTime, setDuration, setSongs, setCurrentSong, nextSong, previousSong } = playerSlice.actions;
+export const {
+  play,
+  pause,
+  setCurrentSong,
+  setIsPlaying,
+  setSongQueue,
+  setPlaylistQueue,
+  setCurrentTime,
+  setDuration,
+  setVolume,
+  nextSong,
+  previousSong,
+} = playerSlice.actions;
+
 export default playerSlice.reducer;

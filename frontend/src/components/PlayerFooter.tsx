@@ -21,14 +21,17 @@ export default function PlayerFooter() {
   const {
     currentSong,
     isPlaying,
-    togglePlayHandler,
-    setCurrentTimeHandler,
-    setDurationHandler,
-    currentTime: progress,
+    songQueue,
+    togglePlayPause,
+    setCurrentTime,
+    setDuration,
+    currentTime,
     duration,
-    playNextHandler,
-    playPreviousHandler,
+    nextSong,
+    previousSong,
   } = usePlayer();
+  console.log('🚀 ~ PlayerFooter ~ isPlaying:', isPlaying)
+  console.log('🚀 ~ PlayerFooter ~ songQueue:', songQueue)
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -39,7 +42,7 @@ export default function PlayerFooter() {
     } else {
       audioRef.current.play();
     }
-    togglePlayHandler();
+    togglePlayPause();
   };
 
   const formatTime = (s: number) => {
@@ -51,12 +54,12 @@ export default function PlayerFooter() {
   useEffect(() => {
     const interval = setInterval(() => {
       if (audioRef.current && !audioRef.current.paused) {
-        setCurrentTimeHandler(audioRef.current.currentTime);
-        setDurationHandler(audioRef.current.duration);
+        setCurrentTime(audioRef.current.currentTime);
+        setDuration(audioRef.current.duration);
       }
     }, 500);
     return () => clearInterval(interval);
-  }, [setCurrentTimeHandler, setDurationHandler]);
+  }, [setCurrentTime, setDuration]);
 
   if (!currentSong) return null;
 
@@ -93,7 +96,7 @@ export default function PlayerFooter() {
         </Group>
 
         <Group>
-          <ActionIcon variant="transparent" color="gray" onClick={playPreviousHandler}>
+          <ActionIcon variant="transparent" color="gray" onClick={previousSong}>
             <IconPlayerSkipBack size={18} />
           </ActionIcon>
 
@@ -101,19 +104,25 @@ export default function PlayerFooter() {
             {isPlaying ? <IconPlayerPause size={18} /> : <IconPlayerPlay size={18} />}
           </ActionIcon>
 
-          <ActionIcon variant="transparent" color="gray" onClick={playNextHandler}>
+          <ActionIcon variant="transparent" color="gray" onClick={nextSong}>
             <IconPlayerSkipForward size={18} />
           </ActionIcon>
         </Group>
 
         <Group style={{ flex: 1 }} px="md">
           <Text size="xs" c="dimmed">
-            {formatTime(progress)}
+            {formatTime(currentTime)}
           </Text>
           <Slider
-            value={(progress / duration) * 100 || 0}
-            onChange={() => { }}
+            value={duration > 0 ? (currentTime / duration) * 100 : 0}
+            onChange={(percentage) => {
+              if (!audioRef.current || duration === 0) return;
+              const newTime = (percentage / 100) * duration;
+              audioRef.current.currentTime = newTime;
+              setCurrentTime(newTime);
+            }}
             style={{ flexGrow: 1 }}
+            step={0.1}
           />
           <Text size="xs" c="dimmed">
             {formatTime(duration)}
@@ -126,10 +135,11 @@ export default function PlayerFooter() {
       </Group>
 
       <audio
+        id="audio-element"
         ref={audioRef}
         src={currentSong.permaUrl}
         autoPlay
-        onEnded={playNextHandler}
+        onEnded={nextSong}
         style={{ display: 'none' }}
       />
     </Box>

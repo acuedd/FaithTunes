@@ -1,67 +1,82 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from 'react-redux';
+import type { RootState } from '../store';
 import {
   play,
-  togglePlay,
-  setVolume,
+  pause,
+  setCurrentSong,
+  setIsPlaying,
+  setSongQueue,
+  setPlaylistQueue,
   setCurrentTime,
   setDuration,
-  setSongs,
-  setCurrentSong,
+  setVolume,
   nextSong,
-  previousSong
-} from "../store/slices/playerSlice";
-import type { Song } from "../types";
-import type { RootState } from "../store";
+  previousSong,
+} from '../store/slices/playerSlice';
+import { useRef, useEffect } from 'react';
+import type { Song } from '../types';
 
 export function usePlayer() {
   const dispatch = useDispatch();
-
   const {
+    currentSong,
     isPlaying,
-    volume,
+    songQueue,
+    playlistQueue,
     currentTime,
     duration,
-    songs,
-    currentSong
+    volume,
   } = useSelector((state: RootState) => state.player);
 
-  const togglePlayHandler = () => dispatch(togglePlay());
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  const setVolumeHandler = (vol: number) => dispatch(setVolume(vol));
-
-  const setCurrentTimeHandler = (time: number) => dispatch(setCurrentTime(time));
-
-  const setDurationHandler = (dur: number) => dispatch(setDuration(dur));
-
-  const setSongsHandler = (songsList: Song[]) => dispatch(setSongs(songsList as []));
-
-  const setCurrentSongHandler = (song: Song | null) => {
-    dispatch(setCurrentSong(song as Song | null));
-    if (song) {
-      dispatch(setCurrentTime(0));
-      dispatch(play());
+  // ⚠️ Esto te permite conectar desde PlayerFooter
+  useEffect(() => {
+    const audio = document.getElementById('audio-element') as HTMLAudioElement;
+    if (audio) {
+      audioRef.current = audio;
     }
-  }
+  }, []);
 
-  const playHandler = () => dispatch(play());
-  const playNextHandler = () => dispatch(nextSong());
-  const playPreviousHandler = () => dispatch(previousSong());
+  const togglePlayPause = () => {
+    if (!audioRef.current) return;
+
+    if (audioRef.current.paused) {
+      audioRef.current.play();
+      dispatch(play());
+    } else {
+      audioRef.current.pause();
+      dispatch(pause());
+    }
+  };
+
+  const playSong = (song: Song) => {
+    dispatch(setCurrentSong(song));
+    setTimeout(() => {
+      if (audioRef.current) {
+        audioRef.current.play();
+        dispatch(play());
+      }
+    }, 100); // delay leve para esperar seteo del src
+  };
 
   return {
+    currentSong,
     isPlaying,
-    volume,
+    songQueue,
+    playlistQueue,
     currentTime,
     duration,
-    songs,
-    currentSong,
-    togglePlayHandler,
-    setVolumeHandler,
-    setCurrentTimeHandler,
-    setDurationHandler,
-    setSongsHandler,
-    setCurrentSongHandler,
-    playNextHandler,
-    playPreviousHandler,
-    playHandler
+    volume,
+    setCurrentSong: (song: Song) => dispatch(setCurrentSong(song)),
+    setPlaylist: (songs: Song[]) => dispatch(setPlaylistQueue(songs)),
+    setSongQueue: (songs: Song[]) => dispatch(setSongQueue(songs)),
+    setCurrentTime: (time: number) => dispatch(setCurrentTime(time)),
+    setDuration: (dur: number) => dispatch(setDuration(dur)),
+    setVolume: (v: number) => dispatch(setVolume(v)),
+    nextSong: () => dispatch(nextSong()),
+    previousSong: () => dispatch(previousSong()),
+    togglePlayPause,
+    playSong, // ✅ esta función reproduce desde cualquier lugar
   };
 }
