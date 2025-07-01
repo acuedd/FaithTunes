@@ -12,24 +12,27 @@ import {
 import { useDisclosure } from '@mantine/hooks';
 import { IconHome, IconUser, IconPlus } from '@tabler/icons-react';
 import { useMediaQuery } from '@mantine/hooks';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Header } from '../components/Header';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { useSongs } from '../hooks/useSong';
 import { usePlaylists } from '../hooks/usePlaylists';
+import SongList from '../components/SongList';
+import { useAppContext } from '../context/AppContext';
+import PlaylistList from '../components/PlaylistList';
+import PlayerFooter from '../components/PlayerFooter';
+import PlaylistDetail from '../components/PlaylistDetail';
 
 export default function PublicPlayer() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { getPublicSongs, songs } = useSongs();
-  const { fetchPlaylists, clearSelectionPlaylist } = usePlaylists();
-
   const queryParams = new URLSearchParams(location.search);
   const initialTab = (queryParams.get('tab') as 'songs' | 'playlists') || 'songs';
   const [activeTab, setActiveTab] = useState<'songs' | 'playlists'>(initialTab);
-  console.log('🚀 ~ PublicPlayer ~ activeTab:', activeTab)
 
+  const { getPublicSongs, songs } = useSongs();
+  const { getPublicPlaylists, clearSelectionPlaylist, selectedPlaylist, pickPlaylist, playlists } = usePlaylists();
 
   useEffect(() => {
     const query = new URLSearchParams(location.search);
@@ -47,17 +50,26 @@ export default function PublicPlayer() {
 
   const fetchData = async () => {
     try {
-      getPublicSongs()
+      getPublicSongs();
+      getPublicPlaylists();
     } catch (err) {
       console.error(err);
     }
   };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
 
   return (
     <Layout
       playlistsLength={0}
       songsLength={0}
       hideSidebar={true}
+      children2={
+        <PlayerFooter />
+      }
     >
       <Group mb="md" gap="sm">
         <Button
@@ -81,7 +93,25 @@ export default function PublicPlayer() {
           Playlists
         </Button>
       </Group>
-
+      <ScrollArea h="100%">
+        {selectedPlaylist && activeTab === 'playlists' ?
+          (
+            <PlaylistDetail />
+          ) : activeTab === 'songs' ? (
+            <SongList
+              songs={songs}
+              onEdit={undefined}
+            />
+          ) : (
+            <PlaylistList
+              onChange={fetchData}
+              onSelect={(playlist) => {
+                pickPlaylist(playlist);
+                navigate(`/public?tab=playlists&playlistselected=${playlist.id}`);
+              }}
+            />
+          )}
+      </ScrollArea>
     </Layout>
   )
 }

@@ -2,6 +2,11 @@
 import api from '../api/axiosInstance';
 import type { Playlist } from '../types';
 
+export const getPublicPlaylists = async (): Promise<Playlist[]> => {
+  const res = await api.get('/playlists/public');
+  return res.data;
+};
+
 export const getPlaylists = async (): Promise<Playlist[]> => {
   const res = await api.get('/playlists');
   return res.data;

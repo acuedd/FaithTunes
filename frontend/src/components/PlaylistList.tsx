@@ -21,7 +21,7 @@ interface PlaylistListProps {
 export default function PlaylistList({ onChange, onSelect }: PlaylistListProps) {
   const navigate = useNavigate();
 
-  const { playlists, deletePlaylist, removeSongFromPlaylist } = usePlaylists();
+  const { deletePlaylist, removeSongFromPlaylist, playlists } = usePlaylists();
 
   const handleDeletePlaylist = async (id: number) => {
     await deletePlaylist(id);

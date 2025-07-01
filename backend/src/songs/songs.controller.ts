@@ -13,6 +13,7 @@ import {
   Patch,
   ParseIntPipe,
   Req,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
@@ -84,7 +85,11 @@ export class SongsController {
     const sanitized = this.songsService.sanitizeFilename(rawFilename);
     await minioClient.putObject(bucket, sanitized, file.buffer);
     const publicUrl = `${process.env.PUBLIC_S3_URL}/${bucket}/${sanitized}`;
-    const userId = req.user?.id;
+    const userId = req.user?.userId;
+
+    if (!userId) {
+      throw new UnauthorizedException('Usuario no autenticado');
+    }
 
     const newSong = await this.songsService.create({
       ...dto,
