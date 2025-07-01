@@ -75,8 +75,7 @@ VITE_S3_BASE_URL=http://localhost:9000/son
 	•	✅ Control de autorización de canciones
 	•	📂 Playlists personalizadas
 	•	🔁 Sección de recientes, nuevas y más reproducidas
-	•	💬 Mensajería en canales y mensajes directos
-	•	🧑 Administración de usuarios y workspaces
+	•	🧑 Administración de usuarios
 	•	📱 Responsive para vista mobile (diseño tipo tarjeta)
 	•	🎚️ Controles de reproducción persistentes
 	•	🌙 Modo oscuro por defecto

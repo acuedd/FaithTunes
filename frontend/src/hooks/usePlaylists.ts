@@ -13,12 +13,20 @@ import {
   deletePlaylist as deletePlaylistService,
   addSongToPlaylist as addSongToPlaylistService,
   removeSongFromPlaylist as removeSongFromPlaylistService,
+  getPublicPlaylists as getPublicPlaylistsAPI,
 } from '../services/playlists.service';
 
 export function usePlaylists() {
   const playlists = useSelector((state: RootState) => state.playlist.playlists);
   const selectedPlaylist = useSelector((state: RootState) => state.playlist.selectedPlaylist);
   const dispatch = useDispatch();
+
+
+  const getPublicPlaylists = useCallback(async (): Promise<Playlist[]> => {
+    const res = await getPublicPlaylistsAPI();
+    dispatch(setPlaylists(res));
+    return res;
+  }, [dispatch]);
 
   const fetchPlaylists = useCallback(async (): Promise<Playlist[]> => {
     const data = await fetchPlaylistsService();
@@ -62,6 +70,7 @@ export function usePlaylists() {
   return {
     playlists,
     selectedPlaylist,
+    getPublicPlaylists,
     fetchPlaylists,
     createPlaylist,
     deletePlaylist,
