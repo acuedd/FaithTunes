@@ -20,22 +20,22 @@ import { usePlayer } from '../hooks/usePlayer';
 export default function PlaylistDetail() {
   const navigate = useNavigate();
   const { selectedPlaylist } = usePlaylists();
-  const { setSongsHandler, setCurrentSongHandler, playHandler } = usePlayer();
+  const { setSongQueue, setCurrentSong, playSong } = usePlayer();
 
   const handlePlay = () => {
     if (selectedPlaylist?.songs?.length) {
-      setSongsHandler(selectedPlaylist.songs);
-      setCurrentSongHandler(selectedPlaylist.songs[0]);
-      playHandler();
+      setSongQueue(selectedPlaylist.songs);
+      setCurrentSong(selectedPlaylist.songs[0]);
+      playSong(selectedPlaylist.songs[0]);
     }
   };
 
   const handleShufflePlay = () => {
     if (selectedPlaylist?.songs?.length) {
       const shuffled = [...selectedPlaylist.songs].sort(() => 0.5 - Math.random());
-      setSongsHandler(shuffled);
-      setCurrentSongHandler(shuffled[0]);
-      playHandler();
+      setSongQueue(shuffled);
+      setCurrentSong(shuffled[0]);
+      playSong(shuffled[0]);
     }
   };
 

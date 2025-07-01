@@ -16,7 +16,7 @@ interface Props {
 
 export default function SongList({ songs, onEdit }: Props) {
   const { deleteSong, updateAuthorization } = useSongs();
-  const { setCurrentSongHandler } = usePlayer();
+  const { setCurrentSong, setSongQueue, playSong } = usePlayer();
   const { addSongToPlaylist, removeSongFromPlaylist, playlists } = usePlaylists();
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -29,7 +29,9 @@ export default function SongList({ songs, onEdit }: Props) {
   };
 
   const handlePlay = (song: Song) => {
-    setCurrentSongHandler(song);
+    setCurrentSong(song);
+    setSongQueue(songs);
+    playSong(song);
   };
 
   const filteredSongs = songs.filter((song) =>
